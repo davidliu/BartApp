@@ -1,6 +1,9 @@
 package com.deviange.bart.stations
 
-import androidx.lifecycle.*
+import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.SavedStateHandle
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.davidliu.bartapi.BartApi
 import com.davidliu.bartapi.stations.StationMeta
 import com.deviange.bart.dagger.viewmodel.ViewModelAssistedFactory
@@ -28,7 +31,9 @@ constructor(
         viewModelScope.launch {
             val response = bartApi.getAllStationsSuspend()
             val stationList = response.root.stations.stationList
-            stations.postValue(response.root.stations.stationList)
+                .sortedBy { meta -> meta.name }
+
+            stations.postValue(stationList)
         }
     }
 }

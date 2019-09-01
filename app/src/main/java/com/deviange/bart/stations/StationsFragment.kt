@@ -6,6 +6,7 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.observe
 import com.deviange.bart.base.ListFragment
 import com.deviange.bart.dagger.viewmodel.ViewModelFactory
+import com.xwray.groupie.Section
 import javax.inject.Inject
 
 class StationsFragment : ListFragment() {
@@ -19,7 +20,14 @@ class StationsFragment : ListFragment() {
         super.onViewCreated(view, savedInstanceState)
 
         viewModel.stations.observe(viewLifecycleOwner) { stations ->
+            val section = Section()
+            stations.forEach { station ->
+                val item = StationMetaItem(station, View.OnClickListener {
 
+                })
+                section.add(item)
+            }
+            adapter.update(listOf(section))
         }
     }
 
