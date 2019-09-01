@@ -4,10 +4,10 @@ import androidx.lifecycle.AbstractSavedStateViewModelFactory
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.savedstate.SavedStateRegistryOwner
-import com.deviange.bart.dagger.scope.PerActivity
+import com.deviange.bart.dagger.scope.ActivityScope
 import javax.inject.Inject
 
-@PerActivity
+@ActivityScope
 class ViewModelFactory @Inject constructor(
     private val viewModelMap: MutableMap<Class<out ViewModel>, ViewModelAssistedFactory<out ViewModel>>,
     owner: SavedStateRegistryOwner

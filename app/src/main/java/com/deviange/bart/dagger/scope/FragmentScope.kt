@@ -4,4 +4,4 @@ import javax.inject.Scope
 
 @Scope
 @MustBeDocumented
-annotation class PerActivity
+annotation class FragmentScope

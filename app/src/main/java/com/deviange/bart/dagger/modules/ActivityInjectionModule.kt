@@ -1,7 +1,10 @@
 package com.deviange.bart.dagger.modules
 
 import com.deviange.bart.activity.MainActivity
+import com.deviange.bart.activity.MainActivityModule
+import com.deviange.bart.activity.dagger.FragmentInjectionModule
 import com.deviange.bart.activity.dagger.ViewModelAssistedFactoriesModule
+import com.deviange.bart.dagger.scope.ActivityScope
 import dagger.Module
 import dagger.android.AndroidInjectionModule
 import dagger.android.ContributesAndroidInjector
@@ -13,10 +16,13 @@ import dagger.android.support.AndroidSupportInjectionModule
         AndroidSupportInjectionModule::class
     ]
 )
-abstract class DaggerAndroidInjectionModule {
+abstract class ActivityInjectionModule {
+    @ActivityScope
     @ContributesAndroidInjector(
         modules = [
-            ViewModelAssistedFactoriesModule::class
+            ViewModelAssistedFactoriesModule::class,
+            FragmentInjectionModule::class,
+            MainActivityModule::class
         ]
     )
     abstract fun mainActivity(): MainActivity

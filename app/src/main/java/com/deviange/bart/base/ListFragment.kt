@@ -10,9 +10,10 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.deviange.bart.R
 import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.ViewHolder
+import dagger.android.support.DaggerFragment
 import kotlinx.android.synthetic.main.list_fragment.*
 
-abstract class ListFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener {
+abstract class ListFragment : DaggerFragment(), SwipeRefreshLayout.OnRefreshListener {
 
     val adapter = GroupAdapter<ViewHolder>()
 
