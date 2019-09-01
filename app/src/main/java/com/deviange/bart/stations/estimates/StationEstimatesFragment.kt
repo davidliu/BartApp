@@ -25,7 +25,12 @@ class StationEstimatesFragment : ListFragment() {
         object : AbstractSavedStateViewModelFactory(requireActivity(), null) {
             override fun <T : ViewModel?> create(key: String, modelClass: Class<T>, handle: SavedStateHandle): T {
                 @Suppress("UNCHECKED_CAST")
-                return viewModelFactory.create(arguments!!.getString(STATION_NAME_KEY)!!, handle) as? T
+                return viewModelFactory.create(
+                    arguments!!.getString(STATION_NAME_KEY)!!,
+                    handle,
+                    key,
+                    requireActivity().savedStateRegistry
+                ) as? T
                     ?: throw IllegalArgumentException("Unknown viewmodel class!")
             }
         }

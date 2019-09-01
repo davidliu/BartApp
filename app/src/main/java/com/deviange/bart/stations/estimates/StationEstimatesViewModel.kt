@@ -4,6 +4,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.savedstate.SavedStateRegistry
 import com.davidliu.bartapi.BartApi
 import com.davidliu.bartapi.common.Direction
 import com.davidliu.bartapi.estimated.EstimateDepartureTime
@@ -19,7 +20,9 @@ class StationEstimatesViewModel
 constructor(
     private val bartApi: BartApi,
     @Assisted private val station: String,
-    @Assisted private val handle: SavedStateHandle
+    @Assisted private val handle: SavedStateHandle,
+    @Assisted private val savedStateKey: String,
+    @Assisted private val savedStateRegistry: SavedStateRegistry
 ) : ViewModel() {
 
     val northBoundEstimates: MutableLiveData<List<EstimateDepartureTime>>
@@ -64,6 +67,10 @@ constructor(
         }
     }
 
+    override fun onCleared() {
+        savedStateRegistry.unregisterSavedStateProvider(savedStateKey)
+    }
+
     companion object {
         const val ESTIMATES_KEY = "estimates"
 
@@ -72,6 +79,6 @@ constructor(
 
     @AssistedInject.Factory
     interface Factory {
-        fun create(station: String, handle: SavedStateHandle): StationEstimatesViewModel
+        fun create(station: String, handle: SavedStateHandle, savedStateKey: String, savedStateRegistry: SavedStateRegistry): StationEstimatesViewModel
     }
 }
