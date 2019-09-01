@@ -3,8 +3,8 @@ package com.deviange.bart.stations
 import android.os.Bundle
 import android.view.View
 import androidx.fragment.app.activityViewModels
-import androidx.fragment.app.viewModels
 import androidx.lifecycle.observe
+import com.deviange.bart.R
 import com.deviange.bart.base.ListFragment
 import com.deviange.bart.dagger.viewmodel.ViewModelFactory
 import com.xwray.groupie.Section
@@ -24,7 +24,13 @@ class StationsFragment : ListFragment() {
             val section = Section()
             stations.forEach { station ->
                 val item = StationMetaItem(station, View.OnClickListener {
-
+                    val fragment = StationEstimatesFragment.newInstance(station.abbr)
+                    val fm = requireFragmentManager()
+                    fm.beginTransaction()
+                        .hide(this)
+                        .add(R.id.content, fragment)
+                        .addToBackStack(null)
+                        .commitAllowingStateLoss()
                 })
                 section.add(item)
             }

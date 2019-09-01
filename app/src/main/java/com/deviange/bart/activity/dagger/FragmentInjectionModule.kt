@@ -1,6 +1,7 @@
 package com.deviange.bart.activity.dagger
 
 import com.deviange.bart.dagger.scope.FragmentScope
+import com.deviange.bart.stations.StationEstimatesFragment
 import com.deviange.bart.stations.StationsFragment
 import dagger.Module
 import dagger.android.AndroidInjectionModule
@@ -17,4 +18,8 @@ abstract class FragmentInjectionModule {
     @FragmentScope
     @ContributesAndroidInjector
     abstract fun stationsFragment(): StationsFragment
+
+    @FragmentScope
+    @ContributesAndroidInjector
+    abstract fun stationEstimatesFragment(): StationEstimatesFragment
 }

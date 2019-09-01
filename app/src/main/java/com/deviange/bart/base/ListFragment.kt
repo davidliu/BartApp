@@ -4,7 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.fragment.app.Fragment
+import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.deviange.bart.R
@@ -29,6 +29,7 @@ abstract class ListFragment : DaggerFragment(), SwipeRefreshLayout.OnRefreshList
 
         swipe_refresh.setOnRefreshListener(this)
         recycler_view.adapter = adapter
+        recycler_view.addItemDecoration(DividerItemDecoration(requireContext(), DividerItemDecoration.VERTICAL))
         recycler_view.layoutManager = LinearLayoutManager(requireContext())
     }
 

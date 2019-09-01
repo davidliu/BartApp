@@ -20,8 +20,6 @@ constructor(
 
 
     val stations: MutableLiveData<List<StationMeta>>
-    @AssistedInject.Factory
-    interface Factory : ViewModelAssistedFactory<StationsViewModel>
 
     init{
         stations = handle.getLiveData(STATIONS_KEY)
@@ -44,4 +42,7 @@ constructor(
     companion object {
         const val STATIONS_KEY = "stations"
     }
+
+    @AssistedInject.Factory
+    interface Factory : ViewModelAssistedFactory<StationsViewModel>
 }

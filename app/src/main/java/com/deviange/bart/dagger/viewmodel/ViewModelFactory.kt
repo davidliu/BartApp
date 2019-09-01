@@ -5,6 +5,7 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.savedstate.SavedStateRegistryOwner
 import com.deviange.bart.dagger.scope.ActivityScope
+import java.lang.IllegalArgumentException
 import javax.inject.Inject
 
 @ActivityScope
@@ -20,6 +21,6 @@ class ViewModelFactory @Inject constructor(
         handle: SavedStateHandle
     ): T {
         return viewModelMap[modelClass]?.create(handle) as? T
-            ?: throw IllegalStateException("Unknown ViewModel class")
+            ?: throw IllegalArgumentException("Unknown ViewModel class")
     }
 }
