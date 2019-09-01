@@ -2,4 +2,6 @@
     <string name="app_name">BartApp</string>
     <string name="northbound">Northbound</string>
     <string name="southbound">Southbound</string>
+    <string name="departure_in_minutes">in %s minutes</string>
+    <string name="leaving">Leaving</string>
 </resources>

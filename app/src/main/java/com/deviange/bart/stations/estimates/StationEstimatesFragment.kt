@@ -10,7 +10,7 @@ import androidx.lifecycle.observe
 import com.deviange.bart.R
 import com.deviange.bart.base.ListFragment
 import com.deviange.bart.base.ui.HeaderItem
-import com.deviange.bart.stations.estimates.EstimateItem
+import com.deviange.bart.stations.estimates.DepartureItem
 import com.deviange.bart.stations.estimates.StationEstimatesViewModel
 import com.xwray.groupie.Section
 import kotlinx.android.synthetic.main.list_fragment.*
@@ -38,23 +38,23 @@ class StationEstimatesFragment : ListFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        viewModel.estimates.observe(viewLifecycleOwner) { estimatesPair ->
-            val (northEstimates, southEstimates) = estimatesPair
+        viewModel.estimates.observe(viewLifecycleOwner) { departuresPair ->
+            val (northDepartures, southDepartures) = departuresPair
             val northSection = Section()
-            northEstimates?.let {
+            northDepartures?.let {
                 northSection.setHeader(HeaderItem(R.string.northbound))
-                northEstimates.forEach { estimate ->
-                    val item = EstimateItem(estimate, null)
+                northDepartures.forEach { departure ->
+                    val item = DepartureItem(departure, null)
                     northSection.add(item)
                 }
             }
 
 
             val southSection = Section()
-            southEstimates?.let {
+            southDepartures?.let {
                 southSection.setHeader(HeaderItem(R.string.southbound))
-                southEstimates.forEach { estimate ->
-                    val item = EstimateItem(estimate, null)
+                southDepartures.forEach { departure ->
+                    val item = DepartureItem(departure, null)
                     southSection.add(item)
                 }
             }

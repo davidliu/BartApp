@@ -7,12 +7,10 @@ import androidx.lifecycle.viewModelScope
 import androidx.savedstate.SavedStateRegistry
 import com.davidliu.bartapi.BartApi
 import com.davidliu.bartapi.common.Direction
-import com.davidliu.bartapi.estimated.EstimateDepartureTime
+import com.davidliu.bartapi.estimated.EstimatedRoute
 import com.deviange.bart.livedata.CombinedLiveData
 import com.squareup.inject.assisted.Assisted
 import com.squareup.inject.assisted.AssistedInject
-import kotlinx.coroutines.async
-import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.launch
 
 class StationEstimatesViewModel
@@ -25,19 +23,19 @@ constructor(
     @Assisted private val savedStateRegistry: SavedStateRegistry
 ) : ViewModel() {
 
-    val northBoundEstimates: MutableLiveData<List<EstimateDepartureTime>>
-    val southBoundEstimates: MutableLiveData<List<EstimateDepartureTime>>
+    val northRoutes: MutableLiveData<List<RouteDeparture>>
+    val southRoutes: MutableLiveData<List<RouteDeparture>>
 
-    val estimates: CombinedLiveData<List<EstimateDepartureTime>, List<EstimateDepartureTime>, Pair<List<EstimateDepartureTime>?, List<EstimateDepartureTime>?>>
+    val estimates: CombinedLiveData<List<RouteDeparture>, List<RouteDeparture>, Pair<List<RouteDeparture>?, List<RouteDeparture>?>>
 
     init {
         val northKey = estimatesKey(station, Direction.NORTHBOUND)
         val southKey = estimatesKey(station, Direction.SOUTHBOUND)
 
-        northBoundEstimates = handle.getLiveData(estimatesKey(station, Direction.NORTHBOUND))
-        southBoundEstimates = handle.getLiveData(estimatesKey(station, Direction.SOUTHBOUND))
+        northRoutes = handle.getLiveData(estimatesKey(station, Direction.NORTHBOUND))
+        southRoutes = handle.getLiveData(estimatesKey(station, Direction.SOUTHBOUND))
 
-        estimates = CombinedLiveData(northBoundEstimates, southBoundEstimates) { north, south -> Pair(north, south) }
+        estimates = CombinedLiveData(northRoutes, southRoutes) { north, south -> Pair(north, south) }
 
         if (!handle.contains(northKey) || !handle.contains(southKey)) {
             refresh()
@@ -46,25 +44,34 @@ constructor(
 
     fun refresh(onComplete: (() -> Unit)? = null) {
         viewModelScope.launch {
-            val jobs = listOf(
-                async {
-                    val northResponse = bartApi.getEstimatedDepartureTimesSuspend(station, null, Direction.NORTHBOUND)
-                    val allEstimates = northResponse.root.station[0].routes
-                        .flatMap { it.estimates }
-                        .toList()
-                    northBoundEstimates.postValue(allEstimates)
-                }, async {
-                    val southResponse = bartApi.getEstimatedDepartureTimesSuspend(station, null, Direction.SOUTHBOUND)
-                    val allEstimates = southResponse.root.station[0].routes
-                        .flatMap { it.estimates }
-                        .toList()
-                    southBoundEstimates.postValue(allEstimates)
-                }
-            )
-            jobs.awaitAll()
+            val response = bartApi.getEstimatedDepartureTimesSuspend(station)
+            val station = response.root.station[0]
+            val northRoutesList = station.routes
+                .orEmpty()
+                .filter { route -> Direction.fromString(route.estimates.firstOrNull()?.direction) == Direction.NORTHBOUND }
+            val southRoutesList = station.routes
+                .orEmpty()
+                .filter { route -> Direction.fromString(route.estimates.firstOrNull()?.direction) == Direction.SOUTHBOUND }
+
+            northRoutes.postValue(getFlatEstimatesList(northRoutesList))
+            southRoutes.postValue(getFlatEstimatesList(southRoutesList))
+
             onComplete?.invoke()
 
         }
+    }
+
+    private fun getFlatEstimatesList(routes: List<EstimatedRoute>): List<RouteDeparture> {
+        return routes
+            .flatMap { route ->
+                route.estimates
+                    .map { estimate ->
+                        RouteDeparture(route, estimate)
+                    }
+            }
+            .sortedBy { routeDeparture ->
+                routeDeparture.departure.minutes
+            }
     }
 
     override fun onCleared() {
