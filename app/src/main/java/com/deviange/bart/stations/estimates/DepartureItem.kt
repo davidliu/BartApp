@@ -20,7 +20,7 @@ class DepartureItem(
             "Leaving" -> context.getString(R.string.leaving)
             else -> context.getString(R.string.departure_in_minutes, departure.departure.minutes)
         }
-        viewHolder.root.color_indicator.setBackgroundColor(Color.parseColor(departure.departure.color))
+        viewHolder.root.color_indicator.setBackgroundColor(Color.parseColor(departure.departure.hexcolor))
         viewHolder.root.setOnClickListener(onClick)
     }
 
