@@ -22,14 +22,12 @@ class StationEstimatesFragment : ListFragment() {
     lateinit var viewModelFactory: StationEstimatesViewModel.Factory
 
     val viewModel: StationEstimatesViewModel by viewModels {
-        object : AbstractSavedStateViewModelFactory(requireActivity(), null) {
+        object : AbstractSavedStateViewModelFactory(this, null) {
             override fun <T : ViewModel?> create(key: String, modelClass: Class<T>, handle: SavedStateHandle): T {
                 @Suppress("UNCHECKED_CAST")
                 return viewModelFactory.create(
                     arguments!!.getString(STATION_NAME_KEY)!!,
-                    handle,
-                    key,
-                    requireActivity().savedStateRegistry
+                    handle
                 ) as? T
                     ?: throw IllegalArgumentException("Unknown viewmodel class!")
             }
