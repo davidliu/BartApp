@@ -18,4 +18,9 @@ class StationMetaItem(
         viewHolder.root.name.text = station.name
         viewHolder.root.setOnClickListener(onClick)
     }
+
+    override fun isSameAs(other: Item<*>?): Boolean {
+        return other is StationMetaItem &&
+                station.id == other.station.id
+    }
 }

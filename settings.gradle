@@ -1,4 +1,4 @@
-include ':app'
+include ':app', ':bartdb'
 
 include ':bartapi'
 project(':bartapi').projectDir = new File(settingsDir, '../bart-api-android/bartapi/')

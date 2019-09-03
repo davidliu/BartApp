@@ -15,6 +15,6 @@ class BartApplication : DaggerApplication() {
     }
 
     override fun applicationInjector(): AndroidInjector<out DaggerApplication> =
-        DaggerAppComponent.builder().build()
+        DaggerAppComponent.factory().create(this)
 
 }

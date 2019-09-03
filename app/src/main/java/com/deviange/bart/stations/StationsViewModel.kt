@@ -5,42 +5,39 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.davidliu.bartapi.BartApi
-import com.davidliu.bartapi.stations.StationMeta
+import com.deviange.bart.dagger.modules.DispatchersModule
 import com.deviange.bart.dagger.viewmodel.ViewModelAssistedFactory
+import com.deviange.bartdb.stations.StationDao
 import com.squareup.inject.assisted.Assisted
 import com.squareup.inject.assisted.AssistedInject
+import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.launch
+import javax.inject.Named
 
 class StationsViewModel
 @AssistedInject
 constructor(
     private val bartApi: BartApi,
+    private val stationsDao: StationDao,
+    @Named(DispatchersModule.IO)
+    private val ioDispatcher: CoroutineDispatcher,
     @Assisted private val handle: SavedStateHandle
 ) : ViewModel() {
 
+    val stations = stationsDao.observeAllStations()
+    val isRefreshing = MutableLiveData<Boolean>(false)
 
-    val stations: MutableLiveData<List<StationMeta>>
-
-    init{
-        stations = handle.getLiveData(STATIONS_KEY)
-
-        if (!handle.contains(STATIONS_KEY)) {
-            refresh()
-        }
-    }
-
-    fun refresh(){
-        viewModelScope.launch {
+    fun refresh() {
+        viewModelScope.launch(ioDispatcher) {
+            isRefreshing.postValue(true)
             val response = bartApi.getAllStationsSuspend()
             val stationList = response.root.stations.stationList
-                .sortedBy { meta -> meta.name }
-
-            stations.postValue(stationList)
+            stationsDao.upsertList(stationList)
+            isRefreshing.postValue(false)
         }
     }
 
     companion object {
-        const val STATIONS_KEY = "stations"
     }
 
     @AssistedInject.Factory
