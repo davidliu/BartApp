@@ -28,6 +28,7 @@ class StationsFragment : ListFragment() {
                     val fragment = StationEstimatesFragment.newInstance(station.id)
                     val fm = requireFragmentManager()
                     fm.beginTransaction()
+                        .setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_left, R.anim.slide_in_left, R.anim.slide_out_right)
                         .hide(this)
                         .add(R.id.content, fragment)
                         .addToBackStack(null)
