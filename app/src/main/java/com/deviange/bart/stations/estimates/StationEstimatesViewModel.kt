@@ -5,6 +5,7 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.davidliu.bartapi.BartApi
+import com.davidliu.bartapi.common.ApiConstants
 import com.davidliu.bartapi.common.Direction
 import com.davidliu.bartapi.estimated.EstimatedRoute
 import com.deviange.bart.livedata.CombinedLiveData
@@ -67,7 +68,10 @@ constructor(
                     }
             }
             .sortedBy { routeDeparture ->
-                routeDeparture.departure.minutes
+                when (routeDeparture.departure.minutes) {
+                    ApiConstants.LEAVING -> 0
+                    else -> routeDeparture.departure.minutes.toInt()
+                }
             }
     }
 
