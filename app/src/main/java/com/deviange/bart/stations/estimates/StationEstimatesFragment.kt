@@ -9,9 +9,10 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.observe
 import com.deviange.bart.R
 import com.deviange.bart.base.ListFragment
-import com.deviange.bart.base.ui.HeaderItem
+import com.deviange.bart.base.ui.ExpandableHeaderItem
 import com.deviange.bart.stations.estimates.DepartureItem
 import com.deviange.bart.stations.estimates.StationEstimatesViewModel
+import com.xwray.groupie.ExpandableGroup
 import com.xwray.groupie.Section
 import kotlinx.android.synthetic.main.list_fragment.*
 import javax.inject.Inject
@@ -38,25 +39,27 @@ class StationEstimatesFragment : ListFragment() {
         super.onViewCreated(view, savedInstanceState)
         viewModel.estimates.observe(viewLifecycleOwner) { departuresPair ->
             val (northDepartures, southDepartures) = departuresPair
+            val northExpandable = ExpandableGroup(ExpandableHeaderItem(R.string.northbound), true)
             val northSection = Section()
             northDepartures?.let {
-                northSection.setHeader(HeaderItem(R.string.northbound))
                 northDepartures.forEach { departure ->
                     val item = DepartureItem(departure, null)
                     northSection.add(item)
                 }
             }
+            northExpandable.add(northSection)
 
 
+            val southExpandable = ExpandableGroup(ExpandableHeaderItem(R.string.southbound), true)
             val southSection = Section()
             southDepartures?.let {
-                southSection.setHeader(HeaderItem(R.string.southbound))
                 southDepartures.forEach { departure ->
                     val item = DepartureItem(departure, null)
                     southSection.add(item)
                 }
             }
-            adapter.update(listOf(northSection, southSection))
+            southExpandable.add(southSection)
+            adapter.update(listOf(northExpandable, southExpandable))
         }
     }
 
