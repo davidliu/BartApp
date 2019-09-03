@@ -1,16 +1,18 @@
 package com.deviange.bart.stations.estimates
 
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.SavedStateHandle
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.*
 import com.davidliu.bartapi.BartApi
 import com.davidliu.bartapi.common.ApiConstants
 import com.davidliu.bartapi.common.Direction
 import com.davidliu.bartapi.estimated.EstimatedRoute
+import com.deviange.bart.R
+import com.deviange.bart.base.ui.ExpandableHeaderItem
 import com.deviange.bart.livedata.CombinedLiveData
 import com.squareup.inject.assisted.Assisted
 import com.squareup.inject.assisted.AssistedInject
+import com.xwray.groupie.ExpandableGroup
+import com.xwray.groupie.Group
+import com.xwray.groupie.Section
 import kotlinx.coroutines.launch
 
 class StationEstimatesViewModel
@@ -21,11 +23,12 @@ constructor(
     @Assisted private val handle: SavedStateHandle
 ) : ViewModel() {
 
-    val northRoutes: MutableLiveData<List<RouteDeparture>>
-    val southRoutes: MutableLiveData<List<RouteDeparture>>
+    private val northRoutes: MutableLiveData<List<RouteDeparture>>
+    private val southRoutes: MutableLiveData<List<RouteDeparture>>
 
-    val estimates: CombinedLiveData<List<RouteDeparture>, List<RouteDeparture>, Pair<List<RouteDeparture>?, List<RouteDeparture>?>>
-
+    private val estimates: CombinedLiveData<List<RouteDeparture>, List<RouteDeparture>, Pair<List<RouteDeparture>?, List<RouteDeparture>?>>
+    val displayItems: MutableLiveData<List<Group>>
+    val isRefreshing = MutableLiveData(false)
     init {
         val northKey = estimatesKey(station, Direction.NORTHBOUND)
         val southKey = estimatesKey(station, Direction.SOUTHBOUND)
@@ -35,13 +38,39 @@ constructor(
 
         estimates = CombinedLiveData(northRoutes, southRoutes) { north, south -> Pair(north, south) }
 
+        displayItems = MediatorLiveData<List<Group>>()
+        displayItems.addSource(estimates) { departuresPair ->
+            val (northDepartures, southDepartures) = departuresPair
+            val northExpandable = ExpandableGroup(ExpandableHeaderItem(R.string.northbound), true)
+            val northSection = Section()
+            northDepartures?.let {
+                northDepartures.forEach { departure ->
+                    val item = DepartureItem(departure, null)
+                    northSection.add(item)
+                }
+            }
+            northExpandable.add(northSection)
+
+            val southExpandable = ExpandableGroup(ExpandableHeaderItem(R.string.southbound), true)
+            val southSection = Section()
+            southDepartures?.let {
+                southDepartures.forEach { departure ->
+                    val item = DepartureItem(departure, null)
+                    southSection.add(item)
+                }
+            }
+            southExpandable.add(southSection)
+            displayItems.postValue(listOf(northExpandable, southExpandable))
+        }
+
         if (!handle.contains(northKey) || !handle.contains(southKey)) {
             refresh()
         }
     }
 
-    fun refresh(onComplete: (() -> Unit)? = null) {
+    fun refresh() {
         viewModelScope.launch {
+            isRefreshing.postValue(true)
             val response = bartApi.getEstimatedDepartureTimesSuspend(station)
             val station = response.root.station[0]
             val northRoutesList = station.routes
@@ -54,8 +83,7 @@ constructor(
             northRoutes.postValue(getFlatEstimatesList(northRoutesList))
             southRoutes.postValue(getFlatEstimatesList(southRoutesList))
 
-            onComplete?.invoke()
-
+            isRefreshing.postValue(false)
         }
     }
 
