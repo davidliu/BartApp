@@ -30,7 +30,7 @@ class StationsFragment : ListFragment() {
                     fm.beginTransaction()
                         .setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_left, R.anim.slide_in_left, R.anim.slide_out_right)
                         .hide(this)
-                        .add(R.id.content, fragment)
+                        .add(R.id.root, fragment)
                         .addToBackStack(null)
                         .commitAllowingStateLoss()
                 })
