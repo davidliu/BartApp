@@ -39,9 +39,8 @@ class StationsFragment : ListFragment() {
             adapter.update(listOf(section))
         }
 
-        viewModel.isRefreshing.observe(viewLifecycleOwner) { refreshing ->
-            swipe_refresh.isRefreshing = refreshing
-        }
+        viewModel.isRefreshing.observe(viewLifecycleOwner) { refreshing -> swipe_refresh.isRefreshing = refreshing }
+
     }
 
     override fun onRefresh() {
