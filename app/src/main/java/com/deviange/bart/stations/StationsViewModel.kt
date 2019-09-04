@@ -37,9 +37,6 @@ constructor(
         }
     }
 
-    companion object {
-    }
-
     @AssistedInject.Factory
     interface Factory : ViewModelAssistedFactory<StationsViewModel>
 }

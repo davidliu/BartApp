@@ -3,6 +3,7 @@ package com.deviange.bart.dagger.modules
 import com.davidliu.bartapi.BartApi
 import com.davidliu.bartapi.gson.BooleanSerializer
 import com.deviange.bart.BuildConfig
+import com.deviange.bart.dagger.InjectionNames
 import com.github.ajalt.timberkt.Timber.v
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
@@ -13,8 +14,10 @@ import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
+import java.net.URL
+import javax.inject.Named
 
-@Module
+@Module(includes = [ServerUrlModule::class])
 object ApiModule {
 
     @Provides
@@ -46,11 +49,16 @@ object ApiModule {
     @Provides
     @JvmStatic
     @Reusable
-    fun retrofit(okHttpClient: OkHttpClient, gson: Gson): Retrofit =
+    fun retrofit(
+        okHttpClient: OkHttpClient,
+        gson: Gson,
+        @Named(InjectionNames.serverUrl)
+        serverUrl: URL
+    ): Retrofit =
         Retrofit.Builder()
             .client(okHttpClient)
             .addConverterFactory(GsonConverterFactory.create(gson))
-            .baseUrl("https://api.bart.gov/api/")
+            .baseUrl(serverUrl)
             .build()
 
     @Provides

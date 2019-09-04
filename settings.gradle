@@ -2,3 +2,6 @@ include ':app', ':bartdb'
 
 include ':bartapi'
 project(':bartapi').projectDir = new File(settingsDir, '../bart-api-android/bartapi/')
+
+include ':bartapi-mock'
+project(':bartapi-mock').projectDir = new File(settingsDir, '../bart-api-android/bartapi-mock/')
