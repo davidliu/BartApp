@@ -23,19 +23,31 @@
         android:textAppearance="?android:attr/textAppearanceListItemSmall"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toEndOf="@id/color_indicator"
+        app:layout_constraintEnd_toStartOf="@+id/estimate"
+        app:layout_constraintHorizontal_bias="0"
         app:layout_constraintTop_toTopOf="parent"
         tools:text="Millbrae" />
 
     <TextView
         android:id="@+id/estimate"
-        android:layout_width="0dp"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:gravity="end"
         android:paddingEnd="10dp"
         android:textAppearance="?android:attr/textAppearanceListItemSmall"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintBottom_toTopOf="@+id/time"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@id/destination"
         app:layout_constraintTop_toTopOf="parent"
         tools:text="in 10 minutes" />
+
+    <TextView
+        android:id="@+id/time"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingEnd="10dp"
+        android:textAppearance="?android:attr/textAppearanceListItemSmall"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/estimate"
+        tools:text="12:00" />
 </androidx.constraintlayout.widget.ConstraintLayout>
