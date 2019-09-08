@@ -1,22 +1,21 @@
 package com.deviange.bart.stations
 
-import android.view.View
 import com.deviange.bart.R
 import com.xwray.groupie.kotlinandroidextensions.Item
 import com.xwray.groupie.kotlinandroidextensions.ViewHolder
 import kotlinx.android.synthetic.main.station_meta_item.*
 
 data class StationMetaItem(
-    private val id: String,
-    private val name: String,
-    private val isFavorited: Boolean,
-    private val onClick: View.OnClickListener?,
-    private val onFavoriteClick: View.OnClickListener?
+    val stationId: String,
+    val name: String,
+    val isFavorited: Boolean,
+    private val onClick: (StationMetaItem) -> Unit,
+    private val onFavoriteClick: (StationMetaItem) -> Unit
 ) : Item() {
     override fun getLayout(): Int = R.layout.station_meta_item
 
     override fun bind(viewHolder: ViewHolder, position: Int) {
-        viewHolder.root.setOnClickListener(onClick)
+        viewHolder.root.setOnClickListener { onClick(this) }
         viewHolder.name.text = name
         viewHolder.favorite.setImageResource(
             when (isFavorited) {
@@ -24,11 +23,11 @@ data class StationMetaItem(
                 else -> R.drawable.ic_star_border_24px
             }
         )
-        viewHolder.favorite.setOnClickListener(onFavoriteClick)
+        viewHolder.favorite.setOnClickListener { onFavoriteClick(this) }
     }
 
     override fun isSameAs(other: com.xwray.groupie.Item<*>?): Boolean {
         return other is StationMetaItem
-                && this.id == other.id
+                && this.stationId == other.stationId
     }
 }

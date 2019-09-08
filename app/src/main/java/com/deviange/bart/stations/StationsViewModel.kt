@@ -1,6 +1,5 @@
 package com.deviange.bart.stations
 
-import android.view.View
 import androidx.lifecycle.*
 import com.davidliu.bartapi.BartApi
 import com.deviange.bart.R
@@ -45,24 +44,37 @@ constructor(
         val favoriteItems = MediatorLiveData<List<Group>>()
         val favoritesExpandable = ExpandableGroup(ExpandableHeaderItem(R.string.favorites), true)
         val favoritesSection = Section()
+        val favoritesItemClick = { item: FavoriteStationItem ->
+            val fragment = StationEstimatesFragment.newInstance(item.station.id)
+            navEvent.postValue(FragmentNavEvent(fragment))
+        }
         favoritesExpandable.add(favoritesSection)
         favoriteItems.addSource(favorites) { stations ->
-            favoritesSection.clear()
-            val items = stations.map { station ->
-                FavoriteStationItem(station, View.OnClickListener {
-                    val fragment = StationEstimatesFragment.newInstance(station.id)
-                    navEvent.postValue(FragmentNavEvent(fragment))
-                })
-            }
+            val items = stations.map { station -> FavoriteStationItem(station, favoritesItemClick) }
             favoritesSection.update(items)
             favoriteItems.postValue(listOf(favoritesExpandable))
         }
 
         val allStationsExpandable = ExpandableGroup(ExpandableHeaderItem(R.string.all_stations), true)
         val allStationsSection = Section()
+        val stationItemClick = { item: StationMetaItem ->
+            val fragment = StationEstimatesFragment.newInstance(item.stationId)
+            navEvent.postValue(FragmentNavEvent(fragment))
+        }
+        val stationFavoriteClick = { item: StationMetaItem ->
+            if (!item.isFavorited) {
+                val newArray = arrayOf(*favorites.value.orEmpty(), FavoriteStation(item.stationId, item.name))
+                favoriteStationsPreference.setValue(newArray)
+            } else {
+                val newArray = favorites.value
+                    .orEmpty()
+                    .filter { favorite -> favorite.id != item.stationId }
+                    .toTypedArray()
+                favoriteStationsPreference.setValue(newArray)
+            }
+        }
         allStationsExpandable.add(allStationsSection)
         val stationItems = CombinedLiveData(favorites, stations) { favorites, stations ->
-            allStationsSection.clear()
             val items = stations.orEmpty()
                 .map { station ->
                     val isFavorited = favorites.orEmpty()
@@ -72,22 +84,9 @@ constructor(
                         station.id,
                         station.name,
                         isFavorited,
-                        View.OnClickListener {
-                            val fragment = StationEstimatesFragment.newInstance(station.id)
-                            navEvent.postValue(FragmentNavEvent(fragment))
-                        },
-                        View.OnClickListener {
-                            if (!isFavorited) {
-                                val newArray = arrayOf(*favorites.orEmpty(), FavoriteStation(station.id, station.name))
-                                favoriteStationsPreference.setValue(newArray)
-                            } else {
-                                val newArray = favorites
-                                    .orEmpty()
-                                    .filter { favorite -> favorite.id != station.id }
-                                    .toTypedArray()
-                                favoriteStationsPreference.setValue(newArray)
-                            }
-                        })
+                        stationItemClick,
+                        stationFavoriteClick
+                    )
                 }
             allStationsSection.update(items)
             listOf(allStationsExpandable)
