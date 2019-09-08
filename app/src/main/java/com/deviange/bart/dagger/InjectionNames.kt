@@ -1,5 +1,6 @@
 package com.deviange.bart.dagger
 
 object InjectionNames {
-    const val serverUrl = "serverUrl"
+    const val SERVER_URL = "SERVER_URL"
+    const val PREFS = "prefs"
 }

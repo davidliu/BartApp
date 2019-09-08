@@ -14,7 +14,8 @@ import javax.inject.Singleton
         ApiModule::class,
         ActivityInjectionModule::class,
         DatabaseModule::class,
-        DispatchersModule::class
+        DispatchersModule::class,
+        PreferencesModule::class
     ]
 )
 interface AppComponent : AndroidInjector<BartApplication> {

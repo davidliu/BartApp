@@ -1,4 +1,4 @@
-package com.deviange.bart.livedata
+package com.deviange.bart.base.livedata
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData

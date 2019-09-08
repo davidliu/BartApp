@@ -7,7 +7,7 @@ import com.davidliu.bartapi.common.Direction
 import com.davidliu.bartapi.estimated.EstimatedRoute
 import com.deviange.bart.R
 import com.deviange.bart.base.ui.ExpandableHeaderItem
-import com.deviange.bart.livedata.CombinedLiveData
+import com.deviange.bart.base.livedata.CombinedLiveData
 import com.squareup.inject.assisted.Assisted
 import com.squareup.inject.assisted.AssistedInject
 import com.xwray.groupie.ExpandableGroup

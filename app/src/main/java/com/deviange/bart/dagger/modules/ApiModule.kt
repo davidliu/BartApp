@@ -52,7 +52,7 @@ object ApiModule {
     fun retrofit(
         okHttpClient: OkHttpClient,
         gson: Gson,
-        @Named(InjectionNames.serverUrl)
+        @Named(InjectionNames.SERVER_URL)
         serverUrl: URL
     ): Retrofit =
         Retrofit.Builder()

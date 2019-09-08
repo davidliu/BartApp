@@ -12,7 +12,7 @@ object ServerUrlModule {
 
     @Provides
     @JvmStatic
-    @Named(InjectionNames.serverUrl)
+    @Named(InjectionNames.SERVER_URL)
     fun serverUrl(): URL {
         return URL(ApiConstants.API_BASE_URL)
     }
