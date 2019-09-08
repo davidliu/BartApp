@@ -4,4 +4,6 @@
     <string name="southbound">Southbound</string>
     <string name="departure_in_minutes">in %d minutes</string>
     <string name="leaving">Leaving</string>
+    <string name="all_stations">All Stations</string>
+    <string name="favorites">Favorites</string>
 </resources>

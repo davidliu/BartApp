@@ -3,7 +3,6 @@ package com.deviange.bart.preferences
 import android.content.SharedPreferences
 import androidx.lifecycle.LiveData
 import com.deviange.bart.base.sharedpreferences.*
-import com.github.ajalt.timberkt.v
 import com.google.gson.Gson
 
 class BartSharedPreferences(
@@ -14,32 +13,26 @@ class BartSharedPreferences(
     val favoriteStations by lazy {
         FavoriteStationsPreference(
             arrayLiveDataGetter(gson, FAVORITE_STATIONS, arrayOf()),
-            setter(FAVORITE_STATIONS)
+            arraySetter(FAVORITE_STATIONS)
         )
     }
 
     @Suppress("UNCHECKED_CAST")
     private inline fun <reified T> liveDataGetter(gson: Gson, key: String, defValue: T): () -> LiveData<T> {
         return {
-            val type = T::class
-            v { "T class = ${type} ${T::class.java}" }
             when (T::class.java) {
                 Boolean::class -> sharedPrefs.booleanLiveData(key, defValue as Boolean)
                 String::class -> sharedPrefs.stringLiveData(key, defValue as String)
                 Int::class -> sharedPrefs.intLiveData(key, defValue as Int)
                 Float::class -> sharedPrefs.floatLiveData(key, defValue as Float)
                 Set::class -> sharedPrefs.stringSetLiveData(key, defValue as Set<String>)
-                Array<Any>::class -> sharedPrefs.arrayLiveData(gson, key, defValue as Array<T>)
                 else -> throw IllegalArgumentException("Bad preference type!")
             } as LiveData<T>
         }
     }
 
-    @Suppress("UNCHECKED_CAST")
     private inline fun <reified T> arrayLiveDataGetter(gson: Gson, key: String, defValue: Array<T>): () -> LiveData<Array<T>> {
-        return {
-            sharedPrefs.arrayLiveData(gson, key, defValue)
-        }
+        return { sharedPrefs.arrayLiveData(gson, key, defValue) }
     }
 
     @Suppress("UNCHECKED_CAST")
@@ -57,8 +50,12 @@ class BartSharedPreferences(
         }
     }
 
+    private inline fun <reified T> arraySetter(key: String): (T) -> Unit {
+        return { value -> sharedPrefs.edit().putString(key, gson.toJson(value)).apply() }
+    }
+
     companion object {
-        const val FAVORITE_STATIONS = "favorite_statis"
+        const val FAVORITE_STATIONS = "favorite_stations"
     }
 
 }

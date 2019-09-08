@@ -4,10 +4,10 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.Observer
 
-class CombinedLiveData<T, K, S>(source1: LiveData<T>, source2: LiveData<K>, private val combine: (data1: T?, data2: K?) -> S) : MediatorLiveData<S>() {
+class CombinedLiveData<T1, T2, Data>(source1: LiveData<T1>, source2: LiveData<T2>, private val combine: (data1: T1?, data2: T2?) -> Data) : MediatorLiveData<Data>() {
 
-    private var data1: T? = null
-    private var data2: K? = null
+    private var data1: T1? = null
+    private var data2: T2? = null
 
     init {
         super.addSource(source1) {

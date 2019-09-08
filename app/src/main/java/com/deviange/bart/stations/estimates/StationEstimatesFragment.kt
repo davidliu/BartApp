@@ -20,10 +20,6 @@ class StationEstimatesFragment : ListFragment() {
         viewModelFactory.create(arguments!!.getString(STATION_NAME_KEY)!!, it)
     }
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-    }
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         viewModel.displayItems
