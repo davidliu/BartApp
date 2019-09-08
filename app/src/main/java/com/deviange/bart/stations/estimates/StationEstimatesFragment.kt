@@ -17,7 +17,7 @@ class StationEstimatesFragment : ListFragment() {
     lateinit var viewModelFactory: StationEstimatesViewModel.Factory
 
     val viewModel: StationEstimatesViewModel by viewModelByFactory {
-        viewModelFactory.create(arguments!!.getString(STATION_NAME_KEY)!!, it)
+        viewModelFactory.create(arguments!!.getString(STATION_ID_KEY)!!, it)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -33,12 +33,16 @@ class StationEstimatesFragment : ListFragment() {
         viewModel.refresh()
     }
 
+    override fun getTitle() = arguments!!.getString(STATION_NAME_KEY)!!
+
     companion object {
-        private const val STATION_NAME_KEY = "station"
-        fun newInstance(station: String): StationEstimatesFragment {
+        private const val STATION_ID_KEY = "station_id"
+        private const val STATION_NAME_KEY = "station_key"
+        fun newInstance(id: String, name: String): StationEstimatesFragment {
             val fragment = StationEstimatesFragment()
             fragment.arguments = Bundle().apply {
-                putString(STATION_NAME_KEY, station)
+                putString(STATION_ID_KEY, id)
+                putString(STATION_NAME_KEY, name)
             }
 
             return fragment

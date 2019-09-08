@@ -45,20 +45,24 @@ constructor(
         val favoritesExpandable = ExpandableGroup(ExpandableHeaderItem(R.string.favorites), true)
         val favoritesSection = Section()
         val favoritesItemClick = { item: FavoriteStationItem ->
-            val fragment = StationEstimatesFragment.newInstance(item.station.id)
+            val fragment = StationEstimatesFragment.newInstance(item.station.id, item.station.name)
             navEvent.postValue(FragmentNavEvent(fragment))
         }
         favoritesExpandable.add(favoritesSection)
         favoriteItems.addSource(favorites) { stations ->
             val items = stations.map { station -> FavoriteStationItem(station, favoritesItemClick) }
             favoritesSection.update(items)
-            favoriteItems.postValue(listOf(favoritesExpandable))
+
+            favoriteItems.postValue(
+                if (items.isEmpty()) listOf()
+                else listOf(favoritesExpandable)
+            )
         }
 
         val allStationsExpandable = ExpandableGroup(ExpandableHeaderItem(R.string.all_stations), true)
         val allStationsSection = Section()
         val stationItemClick = { item: StationMetaItem ->
-            val fragment = StationEstimatesFragment.newInstance(item.stationId)
+            val fragment = StationEstimatesFragment.newInstance(item.stationId, item.name)
             navEvent.postValue(FragmentNavEvent(fragment))
         }
         val stationFavoriteClick = { item: StationMetaItem ->

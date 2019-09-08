@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.view.MenuItem
 import com.deviange.bart.R
 import com.deviange.bart.activity.dagger.BaseActivityModule
+import com.deviange.bart.navigation.getTopFragment
 import dagger.Binds
 import dagger.Module
 import dagger.android.support.DaggerAppCompatActivity
@@ -18,13 +19,22 @@ class MainActivity : DaggerAppCompatActivity() {
         setContentView(R.layout.activity_main)
         setSupportActionBar(toolbar)
 
-        supportFragmentManager.primaryNavigationFragment
+        onStackUpdate()
+
         supportFragmentManager.addOnBackStackChangedListener {
-            supportActionBar?.setDisplayHomeAsUpEnabled(supportFragmentManager.backStackEntryCount > 0)
-            app_bar_layout.setExpanded(true, true)
+            onStackUpdate()
         }
     }
 
+
+    fun onStackUpdate() {
+        supportActionBar?.run {
+            title = supportFragmentManager.getTopFragment()?.getTitle() ?: getString(R.string.app_name)
+            setDisplayHomeAsUpEnabled(supportFragmentManager.backStackEntryCount > 0)
+
+        }
+        app_bar_layout.setExpanded(true, true)
+    }
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         val id = item.getItemId()
         if (id == android.R.id.home) {
