@@ -1,14 +1,13 @@
-package com.deviange.bart.stations
+package com.deviange.bart.stations.estimates
 
 import android.os.Bundle
 import android.view.View
-import androidx.fragment.app.viewModels
-import androidx.lifecycle.AbstractSavedStateViewModelFactory
-import androidx.lifecycle.SavedStateHandle
-import androidx.lifecycle.ViewModel
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.observe
-import com.deviange.bart.base.ListFragment
-import com.deviange.bart.stations.estimates.StationEstimatesViewModel
+import com.deviange.bart.base.fragment.ListFragment
+import com.deviange.bart.dagger.viewmodel.viewModelByFactory
+import com.deviange.bart.stations.StationsFragment
+import dagger.Binds
 import kotlinx.android.synthetic.main.list_fragment.*
 import javax.inject.Inject
 
@@ -17,17 +16,12 @@ class StationEstimatesFragment : ListFragment() {
     @Inject
     lateinit var viewModelFactory: StationEstimatesViewModel.Factory
 
-    val viewModel: StationEstimatesViewModel by viewModels {
-        object : AbstractSavedStateViewModelFactory(this, null) {
-            override fun <T : ViewModel?> create(key: String, modelClass: Class<T>, handle: SavedStateHandle): T {
-                @Suppress("UNCHECKED_CAST")
-                return viewModelFactory.create(
-                    arguments!!.getString(STATION_NAME_KEY)!!,
-                    handle
-                ) as? T
-                    ?: throw IllegalArgumentException("Unknown viewmodel class!")
-            }
-        }
+    val viewModel: StationEstimatesViewModel by viewModelByFactory {
+        viewModelFactory.create(arguments!!.getString(STATION_NAME_KEY)!!, it)
+    }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -53,5 +47,11 @@ class StationEstimatesFragment : ListFragment() {
 
             return fragment
         }
+    }
+
+    @dagger.Module
+    interface Module {
+        @Binds
+        fun fragment(fragment: StationsFragment): Fragment
     }
 }

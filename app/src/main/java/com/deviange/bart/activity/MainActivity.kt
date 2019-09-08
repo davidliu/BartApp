@@ -32,10 +32,9 @@ class MainActivity : DaggerAppCompatActivity() {
         }
         return super.onOptionsItemSelected(item)
     }
-}
-
-@Module(includes = [BaseActivityModule::class])
-abstract class MainActivityModule {
-    @Binds
-    abstract fun activity(activity: MainActivity): Activity
+    @Module(includes = [BaseActivityModule::class])
+    abstract class MainActivityModule {
+        @Binds
+        abstract fun activity(activity: MainActivity): Activity
+    }
 }

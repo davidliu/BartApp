@@ -20,7 +20,7 @@ class DepartureItem(
         val context = viewHolder.root.context
         viewHolder.destination.text = departure.route.destination
         when (departure.departure.minutes) {
-            "Leaving" -> {
+            0 -> {
                 viewHolder.estimate.text = context.getString(R.string.leaving)
                 viewHolder.time.visibility = View.GONE
             }

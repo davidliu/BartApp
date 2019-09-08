@@ -2,12 +2,11 @@ package com.deviange.bart.stations.estimates
 
 import androidx.lifecycle.*
 import com.davidliu.bartapi.BartApi
-import com.davidliu.bartapi.common.ApiConstants
 import com.davidliu.bartapi.common.Direction
 import com.davidliu.bartapi.estimated.EstimatedRoute
 import com.deviange.bart.R
-import com.deviange.bart.base.ui.ExpandableHeaderItem
 import com.deviange.bart.base.livedata.CombinedLiveData
+import com.deviange.bart.base.ui.ExpandableHeaderItem
 import com.squareup.inject.assisted.Assisted
 import com.squareup.inject.assisted.AssistedInject
 import com.xwray.groupie.ExpandableGroup
@@ -27,7 +26,7 @@ constructor(
     private val southRoutes: MutableLiveData<List<RouteDeparture>>
 
     private val estimates: CombinedLiveData<List<RouteDeparture>, List<RouteDeparture>, Pair<List<RouteDeparture>?, List<RouteDeparture>?>>
-    val displayItems: MutableLiveData<List<Group>>
+    val displayItems: LiveData<List<Group>>
     val isRefreshing = MutableLiveData(false)
     init {
         val northKey = estimatesKey(station, Direction.NORTHBOUND)
@@ -95,12 +94,7 @@ constructor(
                         RouteDeparture(route, estimate)
                     }
             }
-            .sortedBy { routeDeparture ->
-                when (routeDeparture.departure.minutes) {
-                    ApiConstants.LEAVING -> 0
-                    else -> routeDeparture.departure.minutes.toInt()
-                }
-            }
+            .sortedBy { routeDeparture -> routeDeparture.departure.minutes }
     }
 
     companion object {

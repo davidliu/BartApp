@@ -18,8 +18,10 @@ object PreferencesModule {
 
     @Provides
     @JvmStatic
-    fun bartSharedPreferences(sharedPreferences: SharedPreferences, gson: Gson) =
-        BartSharedPreferences(sharedPreferences, gson)
+    fun bartSharedPreferences(
+        @Named(InjectionNames.PREFS) sharedPreferences: SharedPreferences,
+        gson: Gson
+    ) = BartSharedPreferences(sharedPreferences, gson)
 
     @Provides
     @JvmStatic

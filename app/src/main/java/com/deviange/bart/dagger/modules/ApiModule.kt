@@ -2,6 +2,7 @@ package com.deviange.bart.dagger.modules
 
 import com.davidliu.bartapi.BartApi
 import com.davidliu.bartapi.gson.BooleanSerializer
+import com.davidliu.bartapi.gson.IntegerSerializer
 import com.deviange.bart.BuildConfig
 import com.deviange.bart.dagger.InjectionNames
 import com.github.ajalt.timberkt.Timber.v
@@ -26,13 +27,14 @@ object ApiModule {
     fun gson(): Gson =
         GsonBuilder()
             .registerTypeAdapter(Boolean::class.java, BooleanSerializer())
+            .registerTypeAdapter(Int::class.java, IntegerSerializer())
             .create()
 
     @Provides
     @Reusable
     @JvmStatic
-    fun okhttp(): OkHttpClient {
-        return OkHttpClient.Builder().apply {
+    fun okhttp(): OkHttpClient =
+        OkHttpClient.Builder().apply {
             if (BuildConfig.DEBUG) {
                 val loggingInterceptor = HttpLoggingInterceptor(object : HttpLoggingInterceptor.Logger {
                     override fun log(message: String) {
@@ -44,7 +46,6 @@ object ApiModule {
                 addInterceptor(loggingInterceptor)
             }
         }.build()
-    }
 
     @Provides
     @JvmStatic

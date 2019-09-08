@@ -1,4 +1,4 @@
-package com.deviange.bart.base
+package com.deviange.bart.base.fragment
 
 import android.os.Bundle
 import android.view.LayoutInflater
