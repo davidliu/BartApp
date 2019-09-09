@@ -30,7 +30,7 @@ constructor(
     private val stationsDao: StationDao,
     @Named(DispatchersModule.IO)
     private val ioDispatcher: CoroutineDispatcher,
-    favoriteStationsPreference: FavoriteStationsPreference,
+    private val favoriteStationsPreference: FavoriteStationsPreference,
     @Assisted private val handle: SavedStateHandle
 ) : ViewModel() {
 
@@ -40,10 +40,13 @@ constructor(
     val navEvent = SingleLiveEvent<NavEvent>()
     val isRefreshing = MutableLiveData<Boolean>(false)
 
+    private val favoritesExpandable = ExpandableGroup(ExpandableHeaderItem(R.string.favorites), true)
+    private val favoritesSection = Section()
+
+    private val allStationsExpandable = ExpandableGroup(ExpandableHeaderItem(R.string.all_stations), true)
+    private val allStationsSection = Section()
     init {
         val favoriteItems = MediatorLiveData<List<Group>>()
-        val favoritesExpandable = ExpandableGroup(ExpandableHeaderItem(R.string.favorites), true)
-        val favoritesSection = Section()
         val favoritesItemClick = { item: FavoriteStationItem ->
             val fragment = StationEstimatesFragment.newInstance(item.station.id, item.station.name)
             navEvent.postValue(FragmentNavEvent(fragment))
@@ -59,8 +62,6 @@ constructor(
             )
         }
 
-        val allStationsExpandable = ExpandableGroup(ExpandableHeaderItem(R.string.all_stations), true)
-        val allStationsSection = Section()
         val stationItemClick = { item: StationMetaItem ->
             val fragment = StationEstimatesFragment.newInstance(item.stationId, item.name)
             navEvent.postValue(FragmentNavEvent(fragment))
@@ -110,6 +111,18 @@ constructor(
             stationsDao.upsertList(stationList)
             isRefreshing.postValue(false)
         }
+    }
+
+    fun onFavoriteMove(from: FavoriteStationItem, target: FavoriteStationItem) {
+        val newFavorites = arrayOf(*favorites.value.orEmpty())
+        val fromIndex = favoritesSection.getPosition(from)
+        val toIndex = favoritesSection.getPosition(target)
+
+        val swap = newFavorites[fromIndex]
+        newFavorites[fromIndex] = newFavorites[toIndex]
+        newFavorites[toIndex] = swap
+
+        favoriteStationsPreference.setValue(newFavorites)
     }
 
     @AssistedInject.Factory

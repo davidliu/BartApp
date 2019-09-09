@@ -32,7 +32,10 @@ data class StationMetaItem(
                 }
         }
         viewHolder.favorite.setImageDrawable(drawable)
-        viewHolder.favorite.setOnClickListener { onFavoriteClick(this) }
+        viewHolder.favorite.setOnClickListener {
+            onFavoriteClick(this)
+            viewHolder.favorite.setOnClickListener(null) // disable until next bind
+        }
     }
 
     override fun isSameAs(other: com.xwray.groupie.Item<*>?): Boolean {

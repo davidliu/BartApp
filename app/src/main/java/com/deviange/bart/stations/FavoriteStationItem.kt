@@ -6,7 +6,7 @@ import com.xwray.groupie.kotlinandroidextensions.Item
 import com.xwray.groupie.kotlinandroidextensions.ViewHolder
 import kotlinx.android.synthetic.main.station_meta_item.view.*
 
-class FavoriteStationItem(
+data class FavoriteStationItem(
     val station: FavoriteStation,
     private val onClick: (FavoriteStationItem) -> Unit
 ) : Item() {
