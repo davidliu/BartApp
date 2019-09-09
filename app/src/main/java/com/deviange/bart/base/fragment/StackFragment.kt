@@ -4,4 +4,8 @@ import dagger.android.support.DaggerFragment
 
 abstract class StackFragment : DaggerFragment() {
     abstract fun getTitle(): String
+
+    init {
+        retainInstance = true
+    }
 }
