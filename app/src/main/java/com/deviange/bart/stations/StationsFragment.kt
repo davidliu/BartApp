@@ -11,6 +11,7 @@ import com.deviange.bart.base.fragment.ListFragment
 import com.deviange.bart.dagger.viewmodel.activityViewModelByFactory
 import com.deviange.bart.navigation.StackNavigator
 import com.xwray.groupie.GroupAdapter
+import com.xwray.groupie.ViewHolder
 import dagger.Binds
 import kotlinx.android.synthetic.main.list_fragment.*
 import javax.inject.Inject
@@ -45,7 +46,9 @@ class StationsFragment : ListFragment() {
             }
 
             override fun canDropOver(recyclerView: RecyclerView, current: RecyclerView.ViewHolder, target: RecyclerView.ViewHolder): Boolean {
-                return current::class == target::class
+                return current is ViewHolder
+                        && target is ViewHolder
+                        && current.item::class == target.item::class
             }
 
             override fun onMove(recyclerView: RecyclerView, viewHolder: RecyclerView.ViewHolder, target: RecyclerView.ViewHolder): Boolean {
