@@ -16,4 +16,14 @@
     <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
 
     <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
+
+    <style name="ListItem">
+        <item name="android:background">@color/white</item>
+    </style>
+
+    <style name="ListItem.Touchable">
+        <item name="android:foreground">?android:selectableItemBackground</item>
+    </style>
+
+    <color name="white">#FFFFFF</color>
 </resources>

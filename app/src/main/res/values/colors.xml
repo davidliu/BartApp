@@ -7,4 +7,5 @@
     <color name="gold">#FFD700</color>
     <color name="grey">#444444</color>
     <color name="light_grey">#808080</color>
+    <color name="verylight_grey">#B0B0B0</color>
 </resources>
