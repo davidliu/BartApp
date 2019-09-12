@@ -46,6 +46,7 @@ constructor(
     private val allStationsExpandable = ExpandableGroup(ExpandableHeaderItem(R.string.all_stations), true)
     private val allStationsSection = Section()
     init {
+        refresh()
         val favoriteItems = MediatorLiveData<List<Group>>()
         val favoritesItemClick = { item: FavoriteStationItem ->
             val fragment = StationEstimatesFragment.newInstance(item.station.id, item.station.name)
