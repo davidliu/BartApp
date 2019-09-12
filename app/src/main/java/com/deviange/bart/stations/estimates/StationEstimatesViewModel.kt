@@ -6,6 +6,7 @@ import com.davidliu.bartapi.common.Direction
 import com.davidliu.bartapi.estimated.EstimatedRoute
 import com.deviange.bart.R
 import com.deviange.bart.base.livedata.CombinedLiveData
+import com.deviange.bart.base.livedata.SingleLiveEvent
 import com.deviange.bart.base.ui.ExpandableHeaderItem
 import com.squareup.inject.assisted.Assisted
 import com.squareup.inject.assisted.AssistedInject
@@ -22,12 +23,14 @@ constructor(
     @Assisted private val handle: SavedStateHandle
 ) : ViewModel() {
 
+    private val clickListener = { item: DepartureItem -> clickEvents.postValue(item) }
     private val northRoutes: MutableLiveData<List<RouteDeparture>>
     private val southRoutes: MutableLiveData<List<RouteDeparture>>
 
     private val estimates: CombinedLiveData<List<RouteDeparture>, List<RouteDeparture>, Pair<List<RouteDeparture>?, List<RouteDeparture>?>>
     val displayItems: LiveData<List<Group>>
     val isRefreshing = MutableLiveData(false)
+    val clickEvents = SingleLiveEvent<DepartureItem>()
     init {
         val northKey = estimatesKey(station, Direction.NORTHBOUND)
         val southKey = estimatesKey(station, Direction.SOUTHBOUND)
@@ -42,22 +45,12 @@ constructor(
             val (northDepartures, southDepartures) = departuresPair
             val northExpandable = ExpandableGroup(ExpandableHeaderItem(R.string.northbound), true)
             val northSection = Section()
-            northDepartures?.let {
-                northDepartures.forEach { departure ->
-                    val item = DepartureItem(departure, null)
-                    northSection.add(item)
-                }
-            }
+            northSection.addAll(mapDepartureToItems(northDepartures))
             northExpandable.add(northSection)
 
             val southExpandable = ExpandableGroup(ExpandableHeaderItem(R.string.southbound), true)
             val southSection = Section()
-            southDepartures?.let {
-                southDepartures.forEach { departure ->
-                    val item = DepartureItem(departure, null)
-                    southSection.add(item)
-                }
-            }
+            southSection.addAll(mapDepartureToItems(southDepartures))
             southExpandable.add(southSection)
             displayItems.postValue(listOf(northExpandable, southExpandable))
         }
@@ -85,6 +78,11 @@ constructor(
             isRefreshing.postValue(false)
         }
     }
+
+
+    private fun mapDepartureToItems(departures: List<RouteDeparture>?) =
+        departures.orEmpty()
+            .map { departure -> DepartureItem(departure, { item: DepartureItem -> clickEvents.postValue(item) }) }
 
     private fun getFlatEstimatesList(routes: List<EstimatedRoute>): List<RouteDeparture> {
         return routes

@@ -4,6 +4,7 @@ import com.deviange.bart.activity.MainActivity
 import com.deviange.bart.activity.dagger.FragmentInjectionModule
 import com.deviange.bart.activity.dagger.ViewModelAssistedFactoriesModule
 import com.deviange.bart.dagger.scope.ActivityScope
+import com.deviange.bart.notifications.departnotification.DepartureNotificationService
 import dagger.Module
 import dagger.android.AndroidInjectionModule
 import dagger.android.ContributesAndroidInjector
@@ -25,4 +26,7 @@ abstract class ActivityInjectionModule {
         ]
     )
     abstract fun mainActivity(): MainActivity
+
+    @ContributesAndroidInjector
+    abstract fun departureNotificationService(): DepartureNotificationService
 }

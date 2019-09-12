@@ -6,4 +6,6 @@
     <string name="leaving">Leaving</string>
     <string name="all_stations">All Stations</string>
     <string name="favorites">Favorites</string>
+    <string name="notification_departures">Departures</string>
+    <string name="notification_departures_description">Displays selected train departure time.</string>
 </resources>

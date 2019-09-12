@@ -1,6 +1,7 @@
 package com.deviange.bart.stations.estimates
 
 import android.graphics.Color
+import android.os.SystemClock
 import android.view.View
 import com.deviange.bart.R
 import com.xwray.groupie.kotlinandroidextensions.Item
@@ -11,9 +12,11 @@ import java.util.*
 import java.util.concurrent.TimeUnit
 
 class DepartureItem(
-    private val departure: RouteDeparture,
-    private val onClick: View.OnClickListener?
+    val departure: RouteDeparture,
+    private val onClick: (DepartureItem) -> Unit,
+    val creationTime: Long = System.currentTimeMillis()
 ) : Item() {
+
     override fun getLayout(): Int = R.layout.departure_item
 
     override fun bind(viewHolder: ViewHolder, position: Int) {
@@ -34,7 +37,7 @@ class DepartureItem(
             }
         }
         viewHolder.color_indicator.setBackgroundColor(Color.parseColor(departure.departure.hexcolor))
-        viewHolder.root.setOnClickListener(onClick)
+        viewHolder.root.setOnClickListener { onClick(this) }
     }
 
 
